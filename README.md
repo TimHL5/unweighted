@@ -1,488 +1,357 @@
-# Unweighted V1 - Prototype
+# Unweighted - Personalized Workout Planning MVP
 
-A behavioral weight loss platform combining personalized workout plans, meal planning, and community accountability.
+A modern web application that generates personalized workout plans based on your goals, schedule, and fitness level.
 
-## 📋 Overview
+## 🎯 What is Unweighted?
 
-Unweighted is a full-stack application built from the technical requirements document. This prototype implements the core features:
+Unweighted helps people start their fitness journey with confidence by providing:
 
-- ✅ User authentication and profile management
-- ✅ Onboarding questionnaire with personalized data collection
-- ✅ AI-powered workout plan generator
-- ✅ Personalized meal plan generator with 15+ recipes
-- ✅ Social feed (Instagram-style for health/fitness/food)
-- ✅ Accountability groups for community support
-- ✅ Progress tracking (weight, measurements, daily check-ins)
-- ✅ Calendar integration for scheduling
-- ✅ Real-time group chat (WebSocket ready)
-
-## 🏗️ Architecture
-
-```
-unweighted/
-├── backend/              # Express.js REST API
-│   ├── src/
-│   │   ├── db/          # Database setup and seed data
-│   │   ├── middleware/  # Auth middleware
-│   │   ├── routes/      # API route handlers
-│   │   └── server.js    # Main server file
-│   ├── database.sqlite  # SQLite database (created on first run)
-│   └── package.json
-├── mobile/              # React Native app (placeholder)
-└── README.md
-```
+- **Personalized Workout Plans**: Custom 4-week plans tailored to your goals
+- **Smart Exercise Selection**: Based on your equipment, fitness level, and preferences
+- **Progressive Overload**: Built-in progression to keep you improving
+- **Shareable Plans**: Every plan gets a unique URL to share with friends or trainers
+- **No Guesswork**: Clear instructions, sets, reps, and form tips for every exercise
 
 ## 🚀 Quick Start
 
-### Prerequisites
+### Running Locally
 
-- Node.js 16+ and npm
-- Git
+See [QUICKSTART.md](./QUICKSTART.md) for detailed local development instructions.
 
-### Installation
-
-1. **Clone the repository:**
-   ```bash
-   git clone <repository-url>
-   cd unweighted
-   ```
-
-2. **Install dependencies:**
-   ```bash
-   cd backend
-   npm install
-   ```
-
-3. **Seed the database with recipes and achievements:**
-   ```bash
-   npm run db:seed
-   ```
-
-4. **Start the development server:**
-   ```bash
-   npm run dev
-   ```
-
-   The API will be running at `http://localhost:3000`
-
-### Test the API
-
-1. **Health check:**
-   ```bash
-   curl http://localhost:3000/api/v1/health
-   ```
-
-2. **Register a new user:**
-   ```bash
-   curl -X POST http://localhost:3000/api/v1/auth/register \
-     -H "Content-Type: application/json" \
-     -d '{
-       "email": "test@example.com",
-       "password": "Password123!",
-       "username": "testuser",
-       "full_name": "Test User",
-       "date_of_birth": "1995-01-01",
-       "gender": "male"
-     }'
-   ```
-
-3. **Use the returned token for authenticated requests:**
-   ```bash
-   curl http://localhost:3000/api/v1/users/me \
-     -H "Authorization: Bearer <your-token>"
-   ```
-
-## 📚 API Documentation
-
-### Base URL
-```
-http://localhost:3000/api/v1
-```
-
-### Authentication
-
-All protected endpoints require a JWT token in the Authorization header:
-```
-Authorization: Bearer <token>
-```
-
-### Core Endpoints
-
-#### Authentication
-- `POST /auth/register` - Create new account
-- `POST /auth/login` - Login with credentials
-- `POST /auth/logout` - Logout
-
-#### User Profile
-- `GET /users/me` - Get current user profile
-- `PUT /users/me` - Update user profile
-- `GET /users/:userId` - Get another user's profile
-- `POST /users/:userId/follow` - Follow user
-- `DELETE /users/:userId/follow` - Unfollow user
-
-#### Onboarding
-- `POST /onboarding/profile` - Submit onboarding questionnaire
-- `GET /onboarding/profile` - Get user's profile data
-
-#### Workout Plans
-- `POST /workouts/generate` - Generate new workout plan
-- `GET /workouts/plans` - Get all user's workout plans
-- `GET /workouts/plans/:planId` - Get specific workout plan details
-- `POST /workouts/plans/:planId/activate` - Set as active plan
-- `DELETE /workouts/plans/:planId` - Delete workout plan
-- `POST /workouts/complete` - Log workout completion
-- `GET /workouts/history` - Get workout completion history
-
-#### Meal Plans
-- `POST /meals/generate` - Generate new meal plan
-  - Body: `{ "duration": 7 }` (optional, defaults to 7 days)
-- `GET /meals/plans` - Get all user's meal plans
-- `GET /meals/plans/:planId` - Get specific meal plan details
-- `POST /meals/plans/:planId/activate` - Set as active plan
-- `DELETE /meals/plans/:planId` - Delete meal plan
-- `GET /meals/recipes/:recipeId` - Get recipe details
-- `POST /meals/complete` - Log meal completion
-- `GET /meals/shopping-list/:planId` - Get shopping list for plan
-
-#### Social Feed
-- `GET /feed` - Get main feed posts
-- `GET /feed/following` - Get posts from followed users only
-- `GET /feed/group/:groupId` - Get posts from group members
-- `GET /feed/explore` - Get explore/trending posts
-- `GET /feed/user/:userId` - Get user's posts
-
-#### Posts
-- `POST /posts` - Create new post
-- `GET /posts/:postId` - Get specific post
-- `DELETE /posts/:postId` - Delete post
-- `POST /posts/:postId/like` - Like a post
-- `DELETE /posts/:postId/like` - Unlike a post
-- `GET /posts/:postId/likes` - Get list of users who liked
-- `POST /posts/:postId/comments` - Add comment
-- `GET /posts/:postId/comments` - Get comments
-- `DELETE /comments/:commentId` - Delete comment
-
-#### Accountability Groups
-- `GET /groups/suggested` - Get suggested groups for matching
-- `POST /groups/create` - Create custom group
-- `POST /groups/join/:groupId` - Request to join group
-- `GET /groups/my-groups` - Get user's groups
-- `GET /groups/:groupId` - Get group details
-- `DELETE /groups/:groupId/leave` - Leave group
-- `GET /groups/:groupId/messages` - Get chat messages
-- `POST /groups/:groupId/messages` - Send message
-- `GET /groups/:groupId/checkins` - Get scheduled check-ins
-- `POST /groups/:groupId/checkins` - Schedule new check-in
-
-#### Progress Tracking
-- `POST /progress/weight` - Log weight
-- `GET /progress/weight` - Get weight history
-- `POST /progress/measurements` - Log body measurements
-- `GET /progress/measurements` - Get measurement history
-- `POST /progress/checkin` - Daily check-in (energy, mood, sleep)
-- `GET /progress/checkin` - Get check-in history
-- `GET /progress/dashboard` - Get progress dashboard data
-- `GET /progress/insights` - Get auto-generated insights
-
-#### Calendar
-- `GET /calendar/events` - Get scheduled events
-
-## 🔄 Complete User Flow Example
-
-### 1. Register and Login
+**TL;DR**:
 ```bash
-# Register
-curl -X POST http://localhost:3000/api/v1/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "alex@example.com",
-    "password": "SecurePass123!",
-    "username": "alexfit",
-    "full_name": "Alex Johnson",
-    "date_of_birth": "1995-03-15",
-    "gender": "male"
-  }'
+# Backend
+cd api
+npm install
+npx prisma generate
+npx prisma migrate dev
+npm run seed
+npm run dev
 
-# Save the token from the response
-TOKEN="<your-token-here>"
+# Frontend (new terminal)
+cd frontend
+npm install
+npm run dev
 ```
 
-### 2. Complete Onboarding
-```bash
-curl -X POST http://localhost:3000/api/v1/onboarding/profile \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "current_weight": 210,
-    "goal_weight": 180,
-    "height": 72,
-    "weight_unit": "lbs",
-    "height_unit": "ft",
-    "fitness_level": "beginner",
-    "primary_goal": "lose_weight",
-    "target_timeline": "6_months",
-    "workout_types": ["strength", "cardio"],
-    "equipment_access": "home_gym",
-    "workout_duration_pref": "30-45",
-    "dietary_restrictions": [],
-    "food_allergies": "",
-    "meals_per_day": "3",
-    "cooking_skill": "intermediate",
-    "meal_prep_time": "30-60",
-    "wake_time": "6-8",
-    "bed_time": "10-12",
-    "preferred_workout_time": "morning",
-    "work_schedule": "9-5",
-    "attempts_count": "3-5",
-    "past_barriers": ["lack_of_motivation", "no_accountability"],
-    "motivation_note": "This time I have a support system!"
-  }'
+Visit: http://localhost:3000
+
+### Deploying to Production
+
+See [FULLSTACK-DEPLOYMENT-GUIDE.md](./FULLSTACK-DEPLOYMENT-GUIDE.md) for complete deployment instructions.
+
+**Platforms**:
+- Backend: Railway (Express + Prisma + PostgreSQL)
+- Frontend: Vercel (Next.js 14)
+- Domain: Namecheap (DNS configuration included)
+
+## 📁 Project Structure
+
+```
+unweighted/
+├── api/                              # Backend (Express + Prisma + PostgreSQL)
+│   ├── prisma/
+│   │   ├── schema.prisma            # Database schema (5 models)
+│   │   └── migrations/              # Database migrations
+│   ├── src/
+│   │   ├── routes/                  # API endpoints
+│   │   │   ├── survey.ts           # POST /survey/submit
+│   │   │   ├── plan.ts             # GET /plan/:shareToken
+│   │   │   ├── waitlist.ts         # POST /waitlist/signup
+│   │   │   └── analytics.ts        # Event tracking
+│   │   ├── lib/
+│   │   │   ├── prisma.ts           # Database client
+│   │   │   └── workoutGenerator.ts # 350+ line plan generation algorithm
+│   │   ├── seed.ts                 # 50+ exercises with form tips
+│   │   └── index.ts                # Express server
+│   └── package.json
+│
+├── frontend/                         # Frontend (Next.js 14 + TypeScript)
+│   ├── app/
+│   │   ├── page.tsx                # Landing page
+│   │   ├── survey/
+│   │   │   └── page.tsx            # Multi-step survey (10 steps)
+│   │   └── plan/
+│   │       └── [shareToken]/
+│   │           └── page.tsx        # Plan display with workout breakdown
+│   ├── lib/
+│   │   └── api.ts                  # API client with error handling
+│   └── package.json
+│
+├── FULLSTACK-DEPLOYMENT-GUIDE.md    # Complete deployment instructions
+├── QUICKSTART.md                     # Local development guide
+└── README.md                         # This file
 ```
 
-### 3. Generate Workout Plan
-```bash
-curl -X POST http://localhost:3000/api/v1/workouts/generate \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "Content-Type: application/json"
+## 🎨 Features
 
-# Activate the plan
-curl -X POST http://localhost:3000/api/v1/workouts/plans/<plan-id>/activate \
-  -H "Authorization: Bearer $TOKEN"
+### Landing Page
+- Hero section with clear value proposition
+- Features showcase
+- "How It Works" section
+- FAQ with expandable questions
+- Waitlist signup form
+
+### Multi-Step Survey
+- 10-step questionnaire with progress bar
+- Collects: age, gender, body metrics, fitness level, goals, schedule
+- Real-time validation
+- Session-based analytics tracking
+
+### Workout Plan Generation
+- Custom 4-week progressive plans
+- 50+ exercise database with alternatives
+- Adapts to equipment access (gym, home, bodyweight)
+- Personalized workout split based on goals
+- Form tips and video suggestions
+- Progression built-in (weekly intensity increase)
+
+### Plan Display
+- Beautiful workout breakdown by week
+- Exercise details with sets/reps/rest
+- Warmup and cooldown instructions
+- Share plan via unique URL
+- Track view count
+- Waitlist CTA after viewing plan
+
+### Analytics
+- Session-based event tracking
+- Tracks: survey completion, plan generation, waitlist signups
+- View counts per plan
+
+## 🛠️ Tech Stack
+
+### Backend
+- **Runtime**: Node.js 18+
+- **Framework**: Express.js
+- **ORM**: Prisma
+- **Database**: PostgreSQL (Railway) / SQLite (local dev)
+- **Validation**: Zod
+- **Language**: TypeScript
+
+### Frontend
+- **Framework**: Next.js 14 (App Router)
+- **UI**: React 18 + TypeScript
+- **Styling**: Tailwind CSS
+- **State**: React Hooks (useState, useRouter)
+- **API Client**: Fetch API with custom wrapper
+
+### DevOps
+- **Backend Hosting**: Railway
+- **Frontend Hosting**: Vercel
+- **DNS**: Namecheap
+- **SSL**: Automatic (Railway + Vercel)
+
+## 📊 Database Schema
+
+### Core Models
+
+**SurveyResponse**: User survey data
+- Demographics (age, gender, height, weight)
+- Goals (primary goal, target weight, timeline)
+- Preferences (workout types, equipment, schedule)
+- Email for waitlist
+
+**WorkoutPlan**: Generated plans
+- Plan name, description, difficulty
+- Duration (4 weeks), workouts per week
+- Weekly schedule (JSON with full workout breakdown)
+- Share token (unique URL)
+- View count
+
+**Exercise**: Exercise database
+- Name, category, muscle groups
+- Equipment required
+- Difficulty level
+- Form tips, alternatives
+
+**WaitlistSignup**: Email capture
+- Email, source (landing_page/after_plan_generated)
+- Interests, referral code
+
+**Analytics**: Event tracking
+- Event type, session ID
+- Metadata (JSON)
+- Timestamp
+
+## 🧠 How the Algorithm Works
+
+The workout generation algorithm (`api/src/lib/workoutGenerator.ts`) is a 350+ line intelligent system that:
+
+1. **Analyzes User Profile**:
+   - Calculates BMI and weight change needed
+   - Determines appropriate intensity based on fitness level
+   - Selects workout split based on frequency (3x/week = Full Body, 4-5x = Upper/Lower, 6x = Push/Pull/Legs)
+
+2. **Filters Exercise Database**:
+   - Filters 50+ exercises by equipment availability
+   - Prioritizes compound movements for beginners
+   - Includes isolation work for intermediate/advanced
+
+3. **Builds Workouts**:
+   - Assigns exercises to muscle groups
+   - Determines sets/reps based on goals:
+     - Weight loss: 3-4 sets × 12-15 reps
+     - Muscle building: 4-5 sets × 6-10 reps
+     - Fitness: 3 sets × 10-12 reps
+   - Sets appropriate rest periods (30s-90s based on intensity)
+
+4. **Implements Progressive Overload**:
+   - Week 1: Baseline intensity
+   - Week 2: +5% volume (more reps or sets)
+   - Week 3: +10% volume or +5% intensity
+   - Week 4: Deload (maintain performance, reduce fatigue)
+
+5. **Personalizes Schedule**:
+   - Aligns workouts with preferred workout time
+   - Accounts for work schedule
+   - Suggests optimal training days
+
+## 🔗 API Endpoints
+
+Base URL: `/` (routes are mounted at root)
+
+### Survey
+```
+POST /survey/submit
+Body: { age, gender, weights, goals, preferences, email }
+Returns: { shareToken, planUrl, plan }
 ```
 
-### 4. Generate Meal Plan
-```bash
-curl -X POST http://localhost:3000/api/v1/meals/generate \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{ "duration": 7 }'
-
-# Get shopping list
-curl http://localhost:3000/api/v1/meals/shopping-list/<plan-id> \
-  -H "Authorization: Bearer $TOKEN"
+### Plans
+```
+GET /plan/:shareToken
+Returns: { plan with full weekly schedule }
 ```
 
-### 5. Join an Accountability Group
-```bash
-# Get suggested groups
-curl http://localhost:3000/api/v1/groups/suggested \
-  -H "Authorization: Bearer $TOKEN"
-
-# Join a group
-curl -X POST http://localhost:3000/api/v1/groups/join/<group-id> \
-  -H "Authorization: Bearer $TOKEN"
+### Waitlist
+```
+POST /waitlist/signup
+Body: { email, source, interestedIn?, referralCode? }
+Returns: { id }
 ```
 
-### 6. Create a Post
-```bash
-curl -X POST http://localhost:3000/api/v1/posts \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "post_type": "meal",
-    "caption": "Day 1 - High protein breakfast! 💪 #healthyeating #weightloss",
-    "media_urls": ["https://example.com/breakfast.jpg"],
-    "media_types": ["image"],
-    "hashtags": ["healthyeating", "weightloss"],
-    "privacy": "public"
-  }'
+### Analytics
+```
+POST /analytics/event
+Body: { eventType, metadata }
+Returns: success
 ```
 
-### 7. Log Progress
-```bash
-# Log weight
-curl -X POST http://localhost:3000/api/v1/progress/weight \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "weight_value": 208,
-    "weight_unit": "lbs",
-    "log_date": "2025-11-01",
-    "note": "Feeling good, down 2 lbs!"
-  }'
-
-# View dashboard
-curl http://localhost:3000/api/v1/progress/dashboard \
-  -H "Authorization: Bearer $TOKEN"
+### Health Check
+```
+GET /health
+Returns: { status: "ok" }
 ```
 
-## 🎯 Core Features Explained
+## 🎓 Documentation
 
-### Workout Plan Generator
-
-The workout generator creates personalized 4-week plans based on:
-- **Fitness Level**: Beginner (4 workouts/week), Intermediate (5/week), Advanced (6/week)
-- **Primary Goal**: Adjusts rep ranges, rest periods, and workout types
-- **Equipment Access**: Provides alternatives for bodyweight-only options
-- **Duration Preference**: Scales workout length accordingly
-
-Each workout includes:
-- Exercise name, sets, reps/duration
-- Rest periods
-- Form tips
-- Alternative exercises
-
-### Meal Plan Generator
-
-The meal plan generator creates nutritionally balanced plans:
-- **Calorie Calculation**: Uses Mifflin-St Jeor equation for TDEE
-- **Goal Adjustment**: 500 cal deficit for weight loss, surplus for muscle gain
-- **Macro Targets**: Customized protein/carbs/fats based on goal
-- **Dietary Filters**: Respects restrictions (vegetarian, vegan, gluten-free, etc.)
-- **Recipe Database**: 15+ recipes across breakfast, lunch, dinner, snacks
-- **Shopping List**: Auto-generated from weekly meal plan, organized by category
-
-### Social Feed & Community
-
-Instagram-style feed with health/fitness focus:
-- **Post Types**: Meal, workout, progress, achievement, motivation
-- **Engagement**: Likes, comments, saves
-- **Privacy Controls**: Public, friends-only, or private posts
-- **Feed Algorithms**: Main feed, following, group-only, explore
-
-### Accountability Groups
-
-Small groups (2-4 people) for support:
-- **Matching System**: Based on goals, fitness level, age, timezone
-- **Group Chat**: Real-time messaging (WebSocket ready)
-- **Weekly Check-ins**: Video call scheduling
-- **Group Feed**: Posts visible only to group members
-
-### Progress Tracking
-
-Comprehensive tracking across multiple dimensions:
-- **Weight Logs**: Track weight over time with graphs
-- **Body Measurements**: Track neck, chest, waist, hips, arms, etc.
-- **Daily Check-ins**: Energy, mood, sleep quality, stress levels
-- **Workout History**: All completed workouts with notes
-- **Insights**: Auto-generated based on progress
-
-## 🗄️ Database Schema
-
-The application uses SQLite for simplicity in the prototype. Key tables:
-
-- **users** - User accounts and authentication
-- **user_profiles** - Onboarding data (goals, preferences)
-- **workout_plans** - Generated workout plans
-- **workouts** - Workout templates
-- **workout_exercises** - Individual exercises in workouts
-- **weekly_schedules** - Weekly workout schedule mapping
-- **workout_completions** - Logged workout sessions
-- **meal_plans** - Generated meal plans
-- **recipes** - Recipe database (15+ pre-seeded)
-- **daily_meals** - Daily meal schedule
-- **meal_completions** - Logged meals
-- **posts** - Social feed posts
-- **likes** - Post likes
-- **comments** - Post comments
-- **follows** - User follow relationships
-- **groups** - Accountability groups
-- **group_members** - Group membership
-- **group_chat_messages** - Group chat messages
-- **group_checkins** - Scheduled video check-ins
-- **weight_logs** - Weight tracking
-- **body_measurements** - Body measurement tracking
-- **daily_checkins** - Daily wellness check-ins
-- **achievements** - Achievement definitions
-- **user_achievements** - Earned achievements
-
-## 🔐 Security Features
-
-- **Password Hashing**: bcrypt with 12 rounds
-- **JWT Authentication**: 24-hour token expiration
-- **Input Validation**: express-validator for all inputs
-- **SQL Injection Protection**: Parameterized queries
-- **CORS**: Configured for allowed origins
-- **Age Verification**: 18+ requirement
+- **[QUICKSTART.md](./QUICKSTART.md)** - Run locally in 5 minutes
+- **[FULLSTACK-DEPLOYMENT-GUIDE.md](./FULLSTACK-DEPLOYMENT-GUIDE.md)** - Deploy to Railway + Vercel
+- **[frontend/README.md](./frontend/README.md)** - Frontend-specific documentation
+- **[api/README.md](./api/README.md)** - Backend API documentation
 
 ## 🧪 Testing
 
-### Manual Testing
+### Test Locally
 
-Start the server and use the provided curl commands above, or use Postman/Insomnia with the Postman collection (if provided).
+```bash
+# Start backend
+cd api && npm run dev
 
-### Example Test Flow
+# Test survey submission
+curl -X POST http://localhost:3001/survey/submit \
+  -H "Content-Type: application/json" \
+  -d @test-survey.json
 
-1. Register a user
-2. Complete onboarding
-3. Generate workout and meal plans
-4. Create a post
-5. Log weight
-6. View progress dashboard
+# Get plan
+curl http://localhost:3001/plan/SHARE_TOKEN
+```
 
-## 📱 Mobile App (Placeholder)
+### Test Production
 
-The `mobile/` directory is a placeholder for the React Native app. The API is fully implemented and ready to be consumed by a mobile frontend.
+```bash
+# Test backend
+curl https://api.yourdomain.com/health
 
-### Recommended Tech Stack for Mobile:
-- **Framework**: React Native (Expo)
-- **State Management**: Redux Toolkit or Zustand
-- **API Client**: Axios or React Query
-- **Navigation**: React Navigation
-- **UI Components**: React Native Paper or NativeBase
+# Test full flow in browser
+open https://yourdomain.com
+```
 
-## 🚧 Future Enhancements
+## 🚦 Roadmap
 
-Based on the PRD, future versions could include:
+### ✅ Phase 1: MVP (Current)
+- Landing page
+- Survey flow
+- Plan generation
+- Plan display
+- Waitlist capture
 
-- **AI Chatbot Coaching**: Real-time AI support (GPT-4 integration)
-- **Video Calling**: Integrated WebRTC for group check-ins
-- **External Calendar Sync**: Google Calendar, Apple Calendar
-- **Wearable Integration**: Apple Watch, Fitbit, Whoop
-- **Push Notifications**: Firebase Cloud Messaging
-- **Image Upload**: S3 or Cloudinary for user photos
-- **Advanced Analytics**: Detailed insights and correlations
-- **Payment Processing**: Stripe for premium subscriptions
-- **Recipe Builder**: User-created recipes
-- **Advanced Workout Tracking**: Weight progression tracking
+### 🔜 Phase 2: User Accounts
+- Authentication (JWT)
+- Save plans to account
+- Plan history
+- Edit/regenerate plans
+
+### 🔮 Phase 3: Progress Tracking
+- Log workouts
+- Track weight progress
+- Upload progress photos
+- View analytics dashboard
+
+### 💭 Phase 4: Social & Community
+- Share progress updates
+- Accountability groups
+- Comments and likes
+- Workout challenges
+
+### 🍽️ Phase 5: Meal Planning
+- Personalized meal plans
+- Recipe database
+- Shopping lists
+- Macro tracking
+
+## 💰 Costs
+
+### Free Tier (MVP)
+- Railway: $5 credit/month
+- Vercel: 100GB bandwidth/month
+- **Total**: $0/month
+
+### Paid Tier (Growth)
+- Railway Pro: $20/month
+- Vercel Pro: $20/month
+- **Total**: $40/month
 
 ## 🤝 Contributing
 
-This is a prototype built from a technical requirements document. To contribute:
-
 1. Fork the repository
-2. Create a feature branch
+2. Create a feature branch: `git checkout -b feature/amazing-feature`
 3. Make your changes
-4. Submit a pull request
+4. Test locally: `npm run dev` in both `api/` and `frontend/`
+5. Commit: `git commit -m 'Add amazing feature'`
+6. Push: `git push origin feature/amazing-feature`
+7. Open a Pull Request
 
-## 📄 License
+## 📝 License
 
-MIT License - see LICENSE file for details
+MIT License - see [LICENSE](./LICENSE) for details
 
-## 👥 Team
+## 🙏 Acknowledgments
 
-- **Product Manager**: Tim
-- **Target Launch**: Q1 2026
-- **Current Version**: V1 Prototype
+- Built with [Next.js](https://nextjs.org/)
+- Database ORM by [Prisma](https://www.prisma.io/)
+- Styled with [Tailwind CSS](https://tailwindcss.com/)
+- Hosted on [Railway](https://railway.app/) & [Vercel](https://vercel.com/)
 
 ## 📞 Support
 
-For questions or issues:
-- Create an issue in the GitHub repository
-- Contact: support@unweighted.com (placeholder)
+- **Issues**: [GitHub Issues](https://github.com/yourusername/unweighted/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/yourusername/unweighted/discussions)
+- **Email**: support@unweighted.com
 
 ---
 
-**Built with ❤️ for the Unweighted community**
+**Ready to get started?** See [QUICKSTART.md](./QUICKSTART.md) to run locally or [FULLSTACK-DEPLOYMENT-GUIDE.md](./FULLSTACK-DEPLOYMENT-GUIDE.md) to deploy to production.
 
-## Quick Reference
-
-### Environment Variables
-```bash
-# Backend .env
-PORT=3000
-DB_PATH=./database.sqlite
-JWT_SECRET=your_secret_key
-JWT_EXPIRES_IN=24h
-ALLOWED_ORIGINS=http://localhost:3000,http://localhost:19006
-```
-
-### NPM Scripts
-```bash
-npm run dev        # Start development server
-npm start          # Start production server
-npm run db:seed    # Seed database with recipes
-```
-
-### Default Port
-The API runs on **port 3000** by default.
+Built with ❤️ for people who want real results.
