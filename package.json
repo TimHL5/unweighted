@@ -1,24 +1,20 @@
 {
-  "name": "unweighted",
+  "name": "unweighted-mvp",
   "version": "1.0.0",
-  "description": "Unweighted - Behavioral weight loss platform with personalized workout plans, meal planning, and community accountability",
+  "description": "Unweighted MVP - Personalized workout plan generator",
   "private": true,
   "workspaces": [
-    "backend",
-    "mobile"
+    "api",
+    "web"
   ],
   "scripts": {
-    "backend": "npm run dev --workspace=backend",
-    "mobile": "npm start --workspace=mobile",
-    "install-all": "npm install && npm install --workspace=backend && npm install --workspace=mobile"
+    "dev": "concurrently \"npm run dev:api\" \"npm run dev:web\"",
+    "dev:api": "npm run dev --workspace=api",
+    "dev:web": "npm run dev --workspace=web",
+    "build": "npm run build --workspace=api && npm run build --workspace=web",
+    "start": "npm run start --workspace=api"
   },
-  "keywords": [
-    "fitness",
-    "weight-loss",
-    "health",
-    "accountability",
-    "community"
-  ],
-  "author": "Tim",
+  "keywords": ["fitness", "workout", "personalized", "mvp"],
+  "author": "Unweighted",
   "license": "MIT"
 }

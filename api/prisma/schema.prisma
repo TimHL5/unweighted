@@ -1,0 +1,107 @@
+// Prisma schema for Unweighted MVP
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model SurveyResponse {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  // Demographics
+  age    Int
+  gender String // male, female, non-binary, prefer-not-to-say
+
+  // Physical Stats
+  currentWeight Float
+  goalWeight    Float
+  height        Float
+  weightUnit    String @default("lbs") // lbs, kg
+  heightUnit    String @default("inches") // inches, cm
+
+  // Fitness Background
+  fitnessLevel  String // beginner, intermediate, advanced
+  primaryGoal   String // lose_weight, build_muscle, improve_fitness, increase_energy
+  targetTimeline String // 1_month, 3_months, 6_months, 1_year
+  attemptsCount String // first_time, 2_times, 3-5_times, 5+_times
+  pastBarriers  String[] // Array of barriers
+
+  // Workout Preferences
+  workoutTypes        String[] // Array of workout types
+  equipmentAccess     String // full_gym, home_gym, bodyweight_only, minimal_equipment
+  workoutDurationPref String // 15-30, 30-45, 45-60, 60+
+  workoutsPerWeek     Int // 2-6
+
+  // Schedule
+  wakeTime             String // 5-6, 6-7, 7-8, 8-9, 9+
+  bedTime              String // 9-10, 10-11, 11-12, 12+
+  preferredWorkoutTime String // morning, afternoon, evening, flexible
+  workSchedule         String // 9-5, shift_work, flexible, student
+
+  // Email for waitlist
+  email String
+
+  // Related workout plan
+  workoutPlan WorkoutPlan?
+}
+
+model WorkoutPlan {
+  id               String         @id @default(cuid())
+  createdAt        DateTime       @default(now())
+  surveyResponseId String         @unique
+  surveyResponse   SurveyResponse @relation(fields: [surveyResponseId], references: [id], onDelete: Cascade)
+
+  // Plan Details
+  planName          String
+  description       String
+  durationWeeks     Int      @default(4)
+  workoutsPerWeek   Int
+  estimatedCalories Int // Estimated calories burned per week
+  difficulty        String // beginner, intermediate, advanced
+
+  // Weekly Schedule (JSON)
+  weeklySchedule Json // { week1: [...], week2: [...], week3: [...], week4: [...] }
+
+  // Share/Access
+  shareToken String @unique @default(cuid())
+  viewCount  Int    @default(0)
+}
+
+model WaitlistSignup {
+  id           String   @id @default(cuid())
+  createdAt    DateTime @default(now())
+  email        String   @unique
+  source       String // landing_page, after_plan_generated
+  interestedIn String[] // meal_plans, community, ai_coaching, progress_tracking
+  referralCode String?
+}
+
+model Analytics {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  eventType String // survey_started, survey_completed, plan_generated, waitlist_signup, plan_shared
+  sessionId String
+  metadata  Json? // Additional context
+}
+
+model Exercise {
+  id              String   @id @default(cuid())
+  name            String
+  muscleGroups    String[] // primary muscle groups
+  secondaryMuscles String[] // secondary muscle groups
+  equipment       String[] // equipment needed
+  difficulty      String // beginner, intermediate, advanced
+  description     String
+  formTips        String
+  alternatives    String[] // alternative exercises
+  videoUrl        String?
+  category        String // upper_body, lower_body, core, cardio, full_body
+  createdAt       DateTime @default(now())
+
+  @@index([category, difficulty, equipment])
+}
