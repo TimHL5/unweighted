@@ -1,0 +1,29 @@
+# Production Environment Variables
+# Copy these to your deployment platform (Railway, Heroku, DigitalOcean)
+
+# Server
+NODE_ENV=production
+PORT=3000
+
+# Database
+DB_PATH=./database.sqlite
+
+# JWT Configuration
+JWT_SECRET=REPLACE_WITH_RANDOM_32_CHAR_STRING
+JWT_EXPIRES_IN=24h
+JWT_REFRESH_EXPIRES_IN=30d
+
+# File Upload
+UPLOAD_DIR=./uploads
+MAX_FILE_SIZE=10485760
+
+# CORS - Replace with your actual domain
+ALLOWED_ORIGINS=https://yourdomain.com,https://api.yourdomain.com,https://www.yourdomain.com
+
+# Optional: Email (for future features)
+# SENDGRID_API_KEY=your_key_here
+
+# Optional: File Storage (for future features)
+# AWS_ACCESS_KEY_ID=your_key
+# AWS_SECRET_ACCESS_KEY=your_secret
+# AWS_S3_BUCKET=unweighted-uploads
