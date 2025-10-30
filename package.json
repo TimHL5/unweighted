@@ -1,0 +1,24 @@
+{
+  "name": "unweighted",
+  "version": "1.0.0",
+  "description": "Unweighted - Behavioral weight loss platform with personalized workout plans, meal planning, and community accountability",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "mobile"
+  ],
+  "scripts": {
+    "backend": "npm run dev --workspace=backend",
+    "mobile": "npm start --workspace=mobile",
+    "install-all": "npm install && npm install --workspace=backend && npm install --workspace=mobile"
+  },
+  "keywords": [
+    "fitness",
+    "weight-loss",
+    "health",
+    "accountability",
+    "community"
+  ],
+  "author": "Tim",
+  "license": "MIT"
+}
