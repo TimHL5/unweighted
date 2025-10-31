@@ -1,32 +1,36 @@
 'use client';
 
-import Link from 'next/link';
-import { useState } from 'react';
-import { joinWaitlist, trackEvent } from '@/lib/api';
+import { useEffect } from 'react';
+import { trackEvent } from '@/lib/api';
+
+// Declare Tally on window for TypeScript
+declare global {
+  interface Window {
+    Tally?: {
+      openPopup: (formId: string, options?: { width?: number }) => void;
+    };
+  }
+}
 
 export default function Home() {
-  const [email, setEmail] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-  const [error, setError] = useState('');
+  // Load Tally widget script
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://tally.so/widgets/embed.js';
+    script.async = true;
+    document.body.appendChild(script);
 
-  const handleWaitlistSignup = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
+    return () => {
+      if (document.body.contains(script)) {
+        document.body.removeChild(script);
+      }
+    };
+  }, []);
 
-    const result = await joinWaitlist({
-      email,
-      source: 'landing_page',
-    });
-
-    setLoading(false);
-
-    if (result.success) {
-      setSubmitted(true);
-      trackEvent('landing_page_waitlist_signup');
-    } else {
-      setError(result.error?.message || 'Failed to join waitlist');
+  const openWaitlist = () => {
+    trackEvent('waitlist_opened');
+    if (window.Tally) {
+      window.Tally.openPopup('w56Pp6', { width: 600 });
     }
   };
 
@@ -53,12 +57,12 @@ export default function Home() {
             </div>
             <h1 className="text-2xl font-bold text-navy">unweighted</h1>
           </div>
-          <Link
-            href="/survey"
+          <button
+            onClick={openWaitlist}
             className="btn-primary"
           >
-            Get Started
-          </Link>
+            Join Waitlist
+          </button>
         </div>
       </header>
 
@@ -80,13 +84,12 @@ export default function Home() {
               <span className="text-coral font-semibold">human accountability</span>.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-              <Link
-                href="/survey"
+              <button
+                onClick={openWaitlist}
                 className="btn-primary text-lg px-10 py-4 ai-glow"
-                onClick={() => trackEvent('hero_cta_clicked')}
               >
-                Start Your Journey
-              </Link>
+                Join Waitlist
+              </button>
               <a
                 href="#how-it-works"
                 className="btn-secondary text-lg px-10 py-4"
@@ -328,7 +331,7 @@ export default function Home() {
                 <span className="text-coral group-open:rotate-180 transition-transform">▼</span>
               </summary>
               <p className="mt-4 text-gray-600 leading-relaxed">
-                We're currently in beta and building out the full platform. Join the waitlist to be among the first to access the complete experience and get special early-access pricing. Initial features like the workout plan generator are available now.
+                We're currently in beta and building out the full platform. Join the waitlist to be among the first to access the complete experience and get special early-access pricing.
               </p>
             </details>
           </div>
@@ -348,36 +351,12 @@ export default function Home() {
           <p className="text-xl mb-8 opacity-90 max-w-2xl mx-auto">
             Join the waitlist for early access to AI coaching, accountability groups, and a community that actually gets it.
           </p>
-          {!submitted ? (
-            <form onSubmit={handleWaitlistSignup} className="max-w-md mx-auto">
-              <div className="flex flex-col sm:flex-row gap-3">
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter your email"
-                  className="flex-1 px-6 py-4 rounded-lg text-navy font-medium focus:outline-none focus:ring-2 focus:ring-coral"
-                  required
-                />
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="bg-coral text-white px-8 py-4 rounded-lg font-semibold hover:bg-coral-600 transition-all shadow-lg hover:shadow-xl disabled:opacity-50 whitespace-nowrap"
-                >
-                  {loading ? 'Joining...' : 'Join Waitlist'}
-                </button>
-              </div>
-              {error && <p className="text-coral-200 mt-3 text-sm">{error}</p>}
-            </form>
-          ) : (
-            <div className="glass rounded-xl p-8 max-w-md mx-auto border-2 border-white/20">
-              <div className="w-16 h-16 bg-coral rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-3xl">✓</span>
-              </div>
-              <p className="text-2xl font-semibold mb-2">You're In!</p>
-              <p className="opacity-90">Check your email - we'll be in touch soon with next steps.</p>
-            </div>
-          )}
+          <button
+            onClick={openWaitlist}
+            className="bg-coral text-white px-10 py-4 rounded-lg font-semibold hover:bg-coral-600 transition-all shadow-lg hover:shadow-xl text-lg"
+          >
+            Join Waitlist
+          </button>
         </div>
       </section>
 
@@ -398,9 +377,9 @@ export default function Home() {
               &copy; 2025 Unweighted. Stop dieting alone.
             </p>
             <div className="flex gap-6">
-              <Link href="/survey" className="text-softblue hover:text-coral transition-colors">
-                Get Started
-              </Link>
+              <button onClick={openWaitlist} className="text-softblue hover:text-coral transition-colors">
+                Join Waitlist
+              </button>
               <a href="#features" className="text-softblue hover:text-coral transition-colors">
                 Features
               </a>
