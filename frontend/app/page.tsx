@@ -1,32 +1,34 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
-import { joinWaitlist, trackEvent } from '@/lib/api';
+import { useEffect } from 'react';
+import { trackEvent } from '@/lib/api';
+
+// Declare Tally types for TypeScript
+declare global {
+  interface Window {
+    Tally?: {
+      openPopup: (formId: string, options?: { width?: number }) => void;
+    };
+  }
+}
 
 export default function Home() {
-  const [email, setEmail] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-  const [error, setError] = useState('');
+  // Load Tally widget script
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://tally.so/widgets/embed.js';
+    script.async = true;
+    document.body.appendChild(script);
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
 
-  const handleWaitlistSignup = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
-
-    const result = await joinWaitlist({
-      email,
-      source: 'landing_page',
-    });
-
-    setLoading(false);
-
-    if (result.success) {
-      setSubmitted(true);
-      trackEvent('landing_page_waitlist_signup');
-    } else {
-      setError(result.error?.message || 'Failed to join waitlist');
+  const openWaitlist = () => {
+    trackEvent('waitlist_opened');
+    if (window.Tally) {
+      window.Tally.openPopup('w56Pp6', { width: 600 });
     }
   };
 
@@ -36,12 +38,12 @@ export default function Home() {
       <header className="container mx-auto px-4 py-6">
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold text-blue-600">Unweighted</h1>
-          <Link
-            href="/survey"
+          <button
+            onClick={openWaitlist}
             className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
           >
-            Get Started
-          </Link>
+            Join Waitlist
+          </button>
         </div>
       </header>
 
@@ -57,13 +59,12 @@ export default function Home() {
           tailored to your goals, schedule, and fitness level in minutes.
         </p>
         <div className="flex gap-4 justify-center">
-          <Link
-            href="/survey"
+          <button
+            onClick={openWaitlist}
             className="bg-blue-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-colors"
-            onClick={() => trackEvent('hero_cta_clicked')}
           >
-            Create Your Plan
-          </Link>
+            Join Waitlist
+          </button>
           <a
             href="#features"
             className="bg-white text-blue-600 px-8 py-4 rounded-lg text-lg font-semibold border-2 border-blue-600 hover:bg-blue-50 transition-colors"
@@ -220,33 +221,12 @@ export default function Home() {
             Be the first to know when we launch new features like progress tracking,
             meal planning, and community accountability.
           </p>
-          {!submitted ? (
-            <form onSubmit={handleWaitlistSignup} className="max-w-md mx-auto">
-              <div className="flex gap-2">
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter your email"
-                  className="flex-1 px-4 py-3 rounded-lg text-gray-900"
-                  required
-                />
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors disabled:opacity-50"
-                >
-                  {loading ? 'Joining...' : 'Join Waitlist'}
-                </button>
-              </div>
-              {error && <p className="text-red-200 mt-2">{error}</p>}
-            </form>
-          ) : (
-            <div className="bg-white/10 border-2 border-white rounded-lg p-6 max-w-md mx-auto">
-              <p className="text-xl font-semibold mb-2">You're on the list!</p>
-              <p className="opacity-90">We'll notify you when new features are ready.</p>
-            </div>
-          )}
+          <button
+            onClick={openWaitlist}
+            className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors text-lg"
+          >
+            Join Waitlist
+          </button>
         </div>
       </section>
 
@@ -257,9 +237,12 @@ export default function Home() {
             &copy; 2025 Unweighted. Built for people who want real results.
           </p>
           <div className="mt-4">
-            <Link href="/survey" className="text-blue-400 hover:text-blue-300">
-              Create Your Plan
-            </Link>
+            <button
+              onClick={openWaitlist}
+              className="text-blue-400 hover:text-blue-300"
+            >
+              Join Waitlist
+            </button>
           </div>
         </div>
       </footer>
