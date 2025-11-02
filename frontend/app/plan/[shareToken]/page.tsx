@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { getPlan, joinWaitlist, trackEvent } from '@/lib/api';
+import { FaInstagram, FaTiktok, FaFacebook } from 'react-icons/fa';
 
 interface Exercise {
   name: string;
@@ -363,7 +364,42 @@ export default function PlanPage() {
       {/* Footer */}
       <footer className="bg-navy-900 text-white py-12 mt-16">
         <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+          {/* Social Media Section */}
+          <div className="text-center mb-8">
+            <h3 className="text-lg font-semibold text-softblue mb-4">Follow the Movement</h3>
+            <div className="flex justify-center items-center gap-5">
+              <a
+                href="https://www.instagram.com/unweighted_official"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-12 h-12 rounded-full bg-navy-700 flex items-center justify-center text-softblue hover:bg-coral hover:text-white hover:scale-110 transition-all duration-300"
+                aria-label="Follow us on Instagram"
+              >
+                <FaInstagram className="text-2xl" />
+              </a>
+              <a
+                href="https://www.tiktok.com/@unweighted.fit"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-12 h-12 rounded-full bg-navy-700 flex items-center justify-center text-softblue hover:bg-coral hover:text-white hover:scale-110 transition-all duration-300"
+                aria-label="Follow us on TikTok"
+              >
+                <FaTiktok className="text-2xl" />
+              </a>
+              <a
+                href="https://www.facebook.com/profile.php?id=61582965223897"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-12 h-12 rounded-full bg-navy-700 flex items-center justify-center text-softblue hover:bg-coral hover:text-white hover:scale-110 transition-all duration-300"
+                aria-label="Follow us on Facebook"
+              >
+                <FaFacebook className="text-2xl" />
+              </a>
+            </div>
+          </div>
+
+          {/* Footer Links */}
+          <div className="flex flex-col md:flex-row justify-between items-center gap-6 pt-8 border-t border-navy-700">
             <div className="flex items-center gap-3">
               <div className="grid grid-cols-2 gap-1 w-8 h-8">
                 <div className="w-3 h-3 rounded-full border border-coral"></div>
@@ -374,11 +410,16 @@ export default function PlanPage() {
               <span className="font-bold text-softblue">unweighted</span>
             </div>
             <p className="text-gray-400 text-sm">
-              &copy; 2025 Unweighted. Your personalized fitness journey starts here.
+              &copy; 2025 Unweighted. Stop dieting alone.
             </p>
-            <Link href="/survey" className="text-softblue hover:text-coral transition-colors font-semibold">
-              Create New Plan
-            </Link>
+            <div className="flex gap-6">
+              <Link href="/" className="text-softblue hover:text-coral transition-colors">
+                Home
+              </Link>
+              <Link href="/survey" className="text-softblue hover:text-coral transition-colors font-semibold">
+                Create Plan
+              </Link>
+            </div>
           </div>
         </div>
       </footer>
