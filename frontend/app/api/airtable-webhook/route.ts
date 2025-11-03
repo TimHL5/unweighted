@@ -3,17 +3,6 @@ import Anthropic from '@anthropic-ai/sdk';
 import { Resend } from 'resend';
 import Airtable from 'airtable';
 
-// Initialize clients
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-});
-
-const resend = new Resend(process.env.RESEND_API_KEY);
-
-const airtable = new Airtable({
-  apiKey: process.env.AIRTABLE_API_KEY,
-}).base(process.env.AIRTABLE_BASE_ID!);
-
 // ============================================================================
 // HELPER FUNCTIONS
 // ============================================================================
@@ -53,7 +42,7 @@ function parseAirtableWebhook(body: any) {
 /**
  * Generate personalized workout plan using Claude AI
  */
-async function generateWorkoutPlan(userData: any) {
+async function generateWorkoutPlan(anthropic: Anthropic, userData: any) {
   console.log('🤖 Generating workout plan with Claude AI...');
 
   const prompt = `You are an expert fitness coach and nutritionist. Create a comprehensive, personalized workout and meal plan.
@@ -227,7 +216,7 @@ function convertMarkdownToHTML(markdown: string): string {
 /**
  * Send personalized plan via email using Resend
  */
-async function sendPlanEmail(email: string, name: string, plan: string) {
+async function sendPlanEmail(resend: Resend, email: string, name: string, plan: string) {
   console.log(`📧 Sending email to ${email}...`);
 
   const htmlContent = convertMarkdownToHTML(plan);
@@ -320,11 +309,11 @@ async function sendPlanEmail(email: string, name: string, plan: string) {
 /**
  * Update Airtable record with generated plan and status
  */
-async function updateAirtableRecord(recordId: string, plan: string) {
+async function updateAirtableRecord(airtableBase: any, recordId: string, plan: string) {
   console.log(`📝 Updating Airtable record ${recordId}...`);
 
   try {
-    const table = airtable(process.env.AIRTABLE_TABLE_ID!);
+    const table = airtableBase(process.env.AIRTABLE_TABLE_ID!);
 
     await table.update(recordId, {
       'Plan Generated': plan,
@@ -349,6 +338,39 @@ export async function POST(request: NextRequest) {
   console.log('🚀 ========================================\n');
 
   try {
+    // Validate environment variables
+    const requiredEnvVars = {
+      ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY,
+      RESEND_API_KEY: process.env.RESEND_API_KEY,
+      AIRTABLE_API_KEY: process.env.AIRTABLE_API_KEY,
+      AIRTABLE_BASE_ID: process.env.AIRTABLE_BASE_ID,
+      AIRTABLE_TABLE_ID: process.env.AIRTABLE_TABLE_ID,
+    };
+
+    for (const [key, value] of Object.entries(requiredEnvVars)) {
+      if (!value) {
+        console.error(`❌ Missing environment variable: ${key}`);
+        return NextResponse.json({
+          success: false,
+          error: `Server configuration error: Missing ${key}`,
+        }, { status: 500 });
+      }
+    }
+
+    // Initialize API clients (only runs at request time, not build time)
+    console.log('🔧 Initializing API clients...');
+    const anthropic = new Anthropic({
+      apiKey: process.env.ANTHROPIC_API_KEY!,
+    });
+
+    const resend = new Resend(process.env.RESEND_API_KEY!);
+
+    const airtableBase = new Airtable({
+      apiKey: process.env.AIRTABLE_API_KEY!,
+    }).base(process.env.AIRTABLE_BASE_ID!);
+
+    console.log('✅ API clients initialized successfully');
+
     // Parse request body
     const body = await request.json();
     console.log('📦 Webhook payload:', JSON.stringify(body, null, 2));
@@ -357,17 +379,17 @@ export async function POST(request: NextRequest) {
     const userData = parseAirtableWebhook(body);
 
     // Step 2: Generate workout plan with Claude
-    const plan = await generateWorkoutPlan(userData);
+    const plan = await generateWorkoutPlan(anthropic, userData);
 
     if (!plan || plan.trim().length === 0) {
       throw new Error('Generated plan is empty');
     }
 
     // Step 3: Send email with the plan
-    await sendPlanEmail(userData.email, userData.name, plan);
+    await sendPlanEmail(resend, userData.email, userData.name, plan);
 
     // Step 4: Update Airtable record
-    await updateAirtableRecord(userData.recordId, plan);
+    await updateAirtableRecord(airtableBase, userData.recordId, plan);
 
     console.log('\n✅ ========================================');
     console.log('✅ WORKFLOW COMPLETED SUCCESSFULLY');
