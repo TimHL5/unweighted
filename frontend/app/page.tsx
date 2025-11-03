@@ -1,268 +1,409 @@
 'use client';
 
-import Link from 'next/link';
-import { useState } from 'react';
-import { joinWaitlist, trackEvent } from '@/lib/api';
+import React from 'react';
+import { motion } from 'framer-motion';
+import { Sparkles, Users, TrendingUp, Target, Brain, Heart } from 'lucide-react';
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
+import Button from './components/Button';
+import Card from './components/Card';
+import FAQ from './components/FAQ';
 
 export default function Home() {
-  const [email, setEmail] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-  const [error, setError] = useState('');
-
-  const handleWaitlistSignup = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
-
-    const result = await joinWaitlist({
-      email,
-      source: 'landing_page',
-    });
-
-    setLoading(false);
-
-    if (result.success) {
-      setSubmitted(true);
-      trackEvent('landing_page_waitlist_signup');
-    } else {
-      setError(result.error?.message || 'Failed to join waitlist');
-    }
-  };
+  const faqItems = [
+    {
+      question: 'How is this different from other weight loss apps?',
+      answer: 'Unweighted combines AI-powered coaching with real human accountability groups. While other apps leave you isolated with generic meal plans, we provide 24/7 AI support PLUS a community of real people on the same journey. Science shows peer support increases success rates by 300%.',
+    },
+    {
+      question: 'What does the AI coach actually do?',
+      answer: 'Your AI coach is available 24/7 to answer questions, provide encouragement, help you navigate challenges, and adapt your plan in real-time. It learns your preferences, understands your struggles, and provides personalized guidance without judgment.',
+    },
+    {
+      question: 'How do accountability groups work?',
+      answer: 'You\'ll be matched with 4-6 people with similar goals and lifestyles. Groups check in weekly to share wins, challenges, and support. It\'s like having workout buddies for your entire health journey - accountability that actually works.',
+    },
+    {
+      question: 'I\'ve tried everything and nothing works. Why would this be different?',
+      answer: 'You haven\'t failed - the approaches have. Most diets fail because they ignore the social aspect of change. Unweighted addresses the real problem: isolation. With AI coaching AND human support, you\'re never struggling alone. That\'s the difference.',
+    },
+    {
+      question: 'How much does it cost?',
+      answer: 'We\'re currently in beta. Join the waitlist to get early access and exclusive founding member pricing when we launch.',
+    },
+  ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
-      {/* Header */}
-      <header className="container mx-auto px-4 py-6">
-        <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-blue-600">Unweighted</h1>
-          <Link
-            href="/survey"
-            className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            Get Started
-          </Link>
-        </div>
-      </header>
+    <div className="min-h-screen bg-white">
+      <Navbar />
 
-      {/* Hero Section */}
-      <section className="container mx-auto px-4 py-20 text-center">
-        <h2 className="text-5xl font-bold text-gray-900 mb-6">
-          Your Personalized Workout Plan,
-          <br />
-          <span className="text-blue-600">Built Around Your Life</span>
-        </h2>
-        <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-          Stop guessing what workouts to do. Get a science-backed, personalized workout plan
-          tailored to your goals, schedule, and fitness level in minutes.
-        </p>
-        <div className="flex gap-4 justify-center">
-          <Link
-            href="/survey"
-            className="bg-blue-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-colors"
-            onClick={() => trackEvent('hero_cta_clicked')}
+      {/* HERO SECTION */}
+      <section className="relative min-h-screen flex items-center justify-center gradient-navy-blue overflow-hidden">
+        {/* Animated Background Elements */}
+        <div className="absolute inset-0 overflow-hidden">
+          <motion.div
+            className="absolute w-96 h-96 bg-soft-blue/20 rounded-full blur-3xl"
+            animate={{
+              x: [0, 100, 0],
+              y: [0, 50, 0],
+            }}
+            transition={{ duration: 20, repeat: Infinity }}
+            style={{ top: '10%', left: '10%' }}
+          />
+          <motion.div
+            className="absolute w-96 h-96 bg-coral-red/20 rounded-full blur-3xl"
+            animate={{
+              x: [0, -100, 0],
+              y: [0, -50, 0],
+            }}
+            transition={{ duration: 15, repeat: Infinity }}
+            style={{ bottom: '10%', right: '10%' }}
+          />
+        </div>
+
+        <div className="container mx-auto px-4 pt-32 pb-20 relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="text-center max-w-4xl mx-auto"
           >
-            Create Your Plan
-          </Link>
-          <a
-            href="#features"
-            className="bg-white text-blue-600 px-8 py-4 rounded-lg text-lg font-semibold border-2 border-blue-600 hover:bg-blue-50 transition-colors"
-          >
-            Learn More
-          </a>
+            <motion.h1
+              className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+            >
+              Stop Dieting Alone.
+            </motion.h1>
+
+            <motion.p
+              className="text-xl md:text-2xl text-white/90 mb-8 leading-relaxed"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+            >
+              Transform weight loss from a solo struggle into a supported journey with{' '}
+              <span className="text-soft-blue font-semibold">AI-powered coaching</span> and{' '}
+              <span className="text-coral-red font-semibold">human accountability</span>.
+            </motion.p>
+
+            <motion.div
+              className="flex flex-col sm:flex-row gap-4 justify-center mb-12"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 }}
+            >
+              <Button
+                href="https://forms.unweighted.fit/waitlist"
+                variant="primary"
+                size="lg"
+              >
+                Join Waitlist
+              </Button>
+              <Button href="#how-it-works" variant="outline" size="lg">
+                See How It Works
+              </Button>
+            </motion.div>
+
+            <motion.div
+              className="flex items-center justify-center gap-2 text-white/80 text-sm"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.8 }}
+            >
+              <div className="flex -space-x-2">
+                {[1, 2, 3, 4].map((i) => (
+                  <div
+                    key={i}
+                    className="w-8 h-8 rounded-full bg-gradient-coral border-2 border-white"
+                  />
+                ))}
+              </div>
+              <span>Join 1,000+ members</span>
+            </motion.div>
+          </motion.div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section id="features" className="container mx-auto px-4 py-20">
-        <h3 className="text-3xl font-bold text-center text-gray-900 mb-12">
-          Why Unweighted Works
-        </h3>
-        <div className="grid md:grid-cols-3 gap-8">
-          <div className="bg-white p-8 rounded-xl shadow-lg">
-            <div className="text-4xl mb-4">🎯</div>
-            <h4 className="text-xl font-bold mb-3">Personalized to You</h4>
-            <p className="text-gray-600">
-              Every plan is custom-built based on your goals, fitness level, equipment access,
-              and schedule. No generic templates.
-            </p>
-          </div>
-          <div className="bg-white p-8 rounded-xl shadow-lg">
-            <div className="text-4xl mb-4">📈</div>
-            <h4 className="text-xl font-bold mb-3">Progressive Overload</h4>
-            <p className="text-gray-600">
-              Built-in progression ensures you're always challenging yourself and making gains,
-              whether building muscle or losing weight.
-            </p>
-          </div>
-          <div className="bg-white p-8 rounded-xl shadow-lg">
-            <div className="text-4xl mb-4">⏱️</div>
-            <h4 className="text-xl font-bold mb-3">Fits Your Schedule</h4>
-            <p className="text-gray-600">
-              Choose how many days per week and how long each workout is. We'll build a plan
-              that fits your life.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* How It Works */}
-      <section className="bg-blue-50 py-20">
+      {/* STATS SECTION */}
+      <section className="bg-navy-blue py-16">
         <div className="container mx-auto px-4">
-          <h3 className="text-3xl font-bold text-center text-gray-900 mb-12">
-            How It Works
-          </h3>
-          <div className="grid md:grid-cols-4 gap-6">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">
-                1
+          <div className="grid md:grid-cols-3 gap-8 text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              <div className="text-5xl md:text-6xl font-bold text-coral-red mb-2">
+                300%
               </div>
-              <h4 className="font-bold mb-2">Take Survey</h4>
-              <p className="text-gray-600 text-sm">
-                Answer 10 quick questions about your goals and lifestyle
-              </p>
-            </div>
-            <div className="text-center">
-              <div className="w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">
-                2
+              <p className="text-white/90">Higher Success Rate with Peer Support</p>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+            >
+              <div className="text-5xl md:text-6xl font-bold text-royal-blue mb-2">
+                24/7
               </div>
-              <h4 className="font-bold mb-2">Get Your Plan</h4>
-              <p className="text-gray-600 text-sm">
-                Receive a personalized 4-week workout plan instantly
-              </p>
-            </div>
-            <div className="text-center">
-              <div className="w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">
-                3
+              <p className="text-white/90">AI Coach Available Anytime</p>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.4 }}
+            >
+              <div className="text-5xl md:text-6xl font-bold text-coral-red mb-2">
+                Zero
               </div>
-              <h4 className="font-bold mb-2">Start Training</h4>
-              <p className="text-gray-600 text-sm">
-                Follow your plan with detailed exercise instructions
-              </p>
-            </div>
-            <div className="text-center">
-              <div className="w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">
-                4
-              </div>
-              <h4 className="font-bold mb-2">See Results</h4>
-              <p className="text-gray-600 text-sm">
-                Track progress and adjust as you get stronger
-              </p>
-            </div>
+              <p className="text-white/90">Shame, Guilt, or Judgment</p>
+            </motion.div>
           </div>
         </div>
       </section>
 
-      {/* FAQ Section */}
-      <section className="container mx-auto px-4 py-20">
-        <h3 className="text-3xl font-bold text-center text-gray-900 mb-12">
-          Frequently Asked Questions
-        </h3>
-        <div className="max-w-3xl mx-auto space-y-6">
-          <details className="bg-white p-6 rounded-xl shadow-md">
-            <summary className="font-bold text-lg cursor-pointer">
-              Is this suitable for beginners?
-            </summary>
-            <p className="mt-4 text-gray-600">
-              Absolutely! Our plans are tailored to your fitness level. Beginners get exercises
-              with proper form guidance and appropriate intensity. As you progress, the plan
-              adapts to keep challenging you.
+      {/* WHY UNWEIGHTED WORKS */}
+      <section id="features" className="py-20 bg-gradient-subtle">
+        <div className="container mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl md:text-5xl font-bold text-navy-blue mb-4">
+              Why Unweighted Works
+            </h2>
+            <p className="text-xl text-dark-gray max-w-3xl mx-auto">
+              Science-backed approach combining AI technology with human connection
             </p>
-          </details>
-          <details className="bg-white p-6 rounded-xl shadow-md">
-            <summary className="font-bold text-lg cursor-pointer">
-              What equipment do I need?
-            </summary>
-            <p className="mt-4 text-gray-600">
-              We support all equipment levels - from full gym access to completely bodyweight-only
-              workouts. Tell us what you have access to, and we'll build a plan around it.
-            </p>
-          </details>
-          <details className="bg-white p-6 rounded-xl shadow-md">
-            <summary className="font-bold text-lg cursor-pointer">
-              How long are the workouts?
-            </summary>
-            <p className="mt-4 text-gray-600">
-              You choose! During the survey, you'll select your preferred workout duration:
-              15-30, 30-45, 45-60, or 60+ minutes. We'll design workouts that fit your time
-              constraints.
-            </p>
-          </details>
-          <details className="bg-white p-6 rounded-xl shadow-md">
-            <summary className="font-bold text-lg cursor-pointer">
-              Can I share my workout plan?
-            </summary>
-            <p className="mt-4 text-gray-600">
-              Yes! Every plan gets a unique shareable link. You can share it with friends,
-              trainers, or workout partners. It's a great way to stay accountable.
-            </p>
-          </details>
-          <details className="bg-white p-6 rounded-xl shadow-md">
-            <summary className="font-bold text-lg cursor-pointer">
-              How is this different from generic workout apps?
-            </summary>
-            <p className="mt-4 text-gray-600">
-              Most apps give everyone the same cookie-cutter plan. Unweighted creates a truly
-              personalized plan based on YOUR specific goals, schedule, equipment, and fitness
-              level. It's like having a personal trainer design your program.
-            </p>
-          </details>
+          </motion.div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            <Card
+              icon={<Brain className="w-12 h-12 text-royal-blue" />}
+              title="AI-Powered Coaching"
+              borderColor="royal"
+            >
+              Your personal AI coach available 24/7 to answer questions, provide
+              encouragement, and adapt your plan in real-time. No waiting, no judgment.
+            </Card>
+
+            <Card
+              icon={<Users className="w-12 h-12 text-coral-red" />}
+              title="Community Accountability"
+              borderColor="coral"
+            >
+              Join a small group of people with similar goals. Weekly check-ins,
+              shared wins, and real support when you need it most.
+            </Card>
+
+            <Card
+              icon={<TrendingUp className="w-12 h-12 text-royal-blue" />}
+              title="Science-Backed Methods"
+              borderColor="royal"
+            >
+              Evidence-based approaches that actually work. No fads, no quick fixes—
+              just sustainable habits that last.
+            </Card>
+          </div>
         </div>
       </section>
 
-      {/* Waitlist CTA */}
-      <section className="bg-blue-600 text-white py-20">
-        <div className="container mx-auto px-4 text-center">
-          <h3 className="text-3xl font-bold mb-4">
-            Join the Beta Waitlist
-          </h3>
-          <p className="text-xl mb-8 opacity-90">
-            Be the first to know when we launch new features like progress tracking,
-            meal planning, and community accountability.
-          </p>
-          {!submitted ? (
-            <form onSubmit={handleWaitlistSignup} className="max-w-md mx-auto">
-              <div className="flex gap-2">
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter your email"
-                  className="flex-1 px-4 py-3 rounded-lg text-gray-900"
-                  required
-                />
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors disabled:opacity-50"
+      {/* YOUR JOURNEY SECTION */}
+      <section id="how-it-works" className="py-20 bg-white">
+        <div className="container mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl md:text-5xl font-bold text-navy-blue mb-4">
+              Your Journey
+            </h2>
+            <p className="text-xl text-dark-gray">
+              From sign-up to sustainable success
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {[
+              {
+                number: 1,
+                color: 'coral',
+                title: 'Quick Assessment',
+                description: 'Tell us about your goals, lifestyle, and what hasn\'t worked before.',
+                icon: <Target className="w-8 h-8" />,
+              },
+              {
+                number: 2,
+                color: 'royal',
+                title: 'Meet Your AI Coach',
+                description: 'Get matched with an AI coach that understands your unique situation.',
+                icon: <Brain className="w-8 h-8" />,
+              },
+              {
+                number: 3,
+                color: 'coral',
+                title: 'Join Your Group',
+                description: 'Connect with 4-6 people on the same journey for weekly accountability.',
+                icon: <Users className="w-8 h-8" />,
+              },
+              {
+                number: 4,
+                color: 'navy',
+                title: 'Build Sustainable Habits',
+                description: 'Make progress with support, guidance, and zero judgment.',
+                icon: <Heart className="w-8 h-8" />,
+              },
+            ].map((step, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="text-center"
+              >
+                <motion.div
+                  className={`w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center text-2xl font-bold text-white ${
+                    step.color === 'coral'
+                      ? 'bg-coral-red'
+                      : step.color === 'royal'
+                      ? 'bg-royal-blue'
+                      : 'bg-navy-blue'
+                  }`}
+                  whileHover={{ scale: 1.1, rotate: 5 }}
+                  transition={{ type: 'spring', stiffness: 300 }}
                 >
-                  {loading ? 'Joining...' : 'Join Waitlist'}
-                </button>
-              </div>
-              {error && <p className="text-red-200 mt-2">{error}</p>}
-            </form>
-          ) : (
-            <div className="bg-white/10 border-2 border-white rounded-lg p-6 max-w-md mx-auto">
-              <p className="text-xl font-semibold mb-2">You're on the list!</p>
-              <p className="opacity-90">We'll notify you when new features are ready.</p>
-            </div>
-          )}
+                  {step.number}
+                </motion.div>
+                <div className="mb-3 text-royal-blue flex justify-center">
+                  {step.icon}
+                </div>
+                <h4 className="text-xl font-bold text-navy-blue mb-2">{step.title}</h4>
+                <p className="text-dark-gray">{step.description}</p>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
-        <div className="container mx-auto px-4 text-center">
-          <p className="text-gray-400">
-            &copy; 2025 Unweighted. Built for people who want real results.
-          </p>
-          <div className="mt-4">
-            <Link href="/survey" className="text-blue-400 hover:text-blue-300">
-              Create Your Plan
-            </Link>
+      {/* NOT ANOTHER DIET APP */}
+      <section className="py-20 bg-light-gray">
+        <div className="container mx-auto px-4">
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-4xl md:text-5xl font-bold text-navy-blue text-center mb-16"
+          >
+            Not Another Diet App
+          </motion.h2>
+
+          <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+            {/* Other Apps */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="bg-white p-8 rounded-xl shadow-card"
+            >
+              <h3 className="text-2xl font-bold text-medium-gray mb-6">
+                Other Apps
+              </h3>
+              <ul className="space-y-4">
+                {[
+                  'Generic meal plans',
+                  'Diet alone',
+                  'Restrictive rules',
+                  'Shame and guilt',
+                  'One-size-fits-all',
+                ].map((item, index) => (
+                  <li key={index} className="flex items-start gap-3">
+                    <span className="text-medium-gray text-xl">✗</span>
+                    <span className="text-dark-gray">{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
+
+            {/* Unweighted */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="bg-gradient-navy-blue p-8 rounded-xl shadow-card-hover"
+            >
+              <h3 className="text-2xl font-bold text-white mb-6">
+                Unweighted
+              </h3>
+              <ul className="space-y-4">
+                {[
+                  'Personalized AI coaching',
+                  'Supportive community',
+                  'Flexible approach',
+                  'Zero judgment',
+                  'Tailored to you',
+                ].map((item, index) => (
+                  <li key={index} className="flex items-start gap-3">
+                    <span className="text-coral-red text-xl font-bold">✓</span>
+                    <span className="text-white">{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
           </div>
         </div>
-      </footer>
+      </section>
+
+      {/* FAQ SECTION */}
+      <section id="faq" className="py-20 bg-white">
+        <div className="container mx-auto px-4">
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-4xl md:text-5xl font-bold text-navy-blue text-center mb-16"
+          >
+            Common Questions
+          </motion.h2>
+          <FAQ items={faqItems} />
+        </div>
+      </section>
+
+      {/* FINAL CTA SECTION */}
+      <section className="gradient-navy-blue py-20">
+        <div className="container mx-auto px-4 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+              Ready to Stop Dieting Alone?
+            </h2>
+            <p className="text-xl text-white/90 mb-8 max-w-3xl mx-auto">
+              Join the waitlist for early access to AI coaching, accountability groups,
+              and a community that actually gets it.
+            </p>
+            <Button
+              href="https://forms.unweighted.fit/waitlist"
+              variant="primary"
+              size="lg"
+            >
+              Join Waitlist
+            </Button>
+          </motion.div>
+        </div>
+      </section>
+
+      <Footer />
     </div>
   );
 }

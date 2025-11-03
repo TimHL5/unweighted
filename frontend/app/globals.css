@@ -1,25 +1,120 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+* {
+  scroll-behavior: smooth;
+}
+
 :root {
-  --foreground-rgb: 0, 0, 0;
+  --foreground-rgb: 10, 30, 61;
   --background-start-rgb: 255, 255, 255;
   --background-end-rgb: 255, 255, 255;
+
+  /* Brand Colors */
+  --coral-red: #FF4444;
+  --navy-blue: #0A1E3D;
+  --royal-blue: #2563EB;
+  --soft-blue: #60A5FA;
 }
 
 body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  background: rgb(var(--background-start-rgb));
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scroll margin for fixed navbar */
+section {
+  scroll-margin-top: 80px;
+}
+
+/* Custom gradient utilities */
+.gradient-navy-blue {
+  background: linear-gradient(135deg, #0A1E3D 0%, #2563EB 100%);
+}
+
+.gradient-coral {
+  background: linear-gradient(135deg, #FF4444 0%, #FF6B6B 100%);
+}
+
+.gradient-subtle {
+  background: linear-gradient(180deg, #FFFFFF 0%, #F3F4F6 100%);
+}
+
+/* Smooth transitions for interactive elements */
+button,
+a,
+.card,
+.hover-lift {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Focus states for accessibility */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--royal-blue);
+  outline-offset: 2px;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--royal-blue);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--navy-blue);
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+
+  .hover-lift {
+    @apply transition-transform duration-300 ease-out;
+  }
+
+  .hover-lift:hover {
+    @apply -translate-y-2;
+  }
+}
+
+@layer components {
+  /* Primary Button Style */
+  .btn-primary {
+    @apply bg-coral-red text-white font-semibold px-8 py-3 rounded-lg
+           shadow-button hover:bg-coral-red-hover hover:-translate-y-0.5
+           hover:shadow-card-hover active:scale-98
+           transition-all duration-200 ease-in-out;
+  }
+
+  /* Secondary Button Style */
+  .btn-secondary {
+    @apply bg-transparent border-2 border-royal-blue text-royal-blue font-semibold
+           px-8 py-3 rounded-lg hover:bg-royal-blue hover:text-white
+           transition-all duration-300 ease-in-out;
+  }
+
+  /* Card Style */
+  .feature-card {
+    @apply bg-white p-8 rounded-xl shadow-card
+           hover:-translate-y-2 hover:shadow-card-hover
+           transition-all duration-300 ease-out;
   }
 }
