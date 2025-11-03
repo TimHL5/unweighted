@@ -74,11 +74,11 @@ export default function Navbar() {
           {/* CTA Button (Desktop) */}
           <div className="hidden md:block">
             <Button
-              href="https://forms.unweighted.fit/waitlist"
+              href="https://forms.unweighted.fit/personalized-workout-plan"
               variant="primary"
               size="md"
             >
-              Join Waitlist
+              Get Free Workout
             </Button>
           </div>
 
@@ -124,11 +124,11 @@ export default function Navbar() {
               ))}
               <div className="pt-4">
                 <Button
-                  href="https://forms.unweighted.fit/waitlist"
+                  href="https://forms.unweighted.fit/personalized-workout-plan"
                   variant="primary"
                   className="w-full"
                 >
-                  Join Waitlist
+                  Get Free Workout
                 </Button>
               </div>
             </div>

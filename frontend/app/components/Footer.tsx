@@ -8,9 +8,9 @@ import Logo from './Logo';
 
 export default function Footer() {
   const socialLinks = [
-    { icon: <Instagram className="w-6 h-6" />, href: 'https://instagram.com/unweighted', label: 'Instagram' },
-    { icon: <FaTiktok className="w-6 h-6" />, href: 'https://tiktok.com/@unweighted', label: 'TikTok' },
-    { icon: <Facebook className="w-6 h-6" />, href: 'https://facebook.com/unweighted', label: 'Facebook' },
+    { icon: <Instagram className="w-6 h-6" />, href: 'https://instagram.com/unweighted_official', label: 'Instagram' },
+    { icon: <FaTiktok className="w-6 h-6" />, href: 'https://www.tiktok.com/@unweighted.fit', label: 'TikTok' },
+    { icon: <Facebook className="w-6 h-6" />, href: 'https://www.facebook.com/profile.php?id=61582965223897', label: 'Facebook' },
   ];
 
   const footerLinks = [

@@ -95,14 +95,14 @@ export default function Home() {
               transition={{ delay: 0.6 }}
             >
               <Button
-                href="https://forms.unweighted.fit/waitlist"
+                href="https://forms.unweighted.fit/personalized-workout-plan"
                 variant="primary"
                 size="lg"
               >
-                Join Waitlist
+                Get Free Workout Plan
               </Button>
-              <Button href="#how-it-works" variant="outline" size="lg">
-                See How It Works
+              <Button href="https://forms.unweighted.fit/waitlist" variant="outline" size="lg">
+                Join Waitlist
               </Button>
             </motion.div>
 
