@@ -1,0 +1,27 @@
+{
+  "name": "Unweighted",
+  "short_name": "Unweighted",
+  "description": "The only calorie tracker that keeps you accountable.",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "background_color": "#FAFAFA",
+  "theme_color": "#E94560",
+  "icons": [
+    {
+      "src": "/icons/icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/icons/icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/icons/icon-maskable.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}
